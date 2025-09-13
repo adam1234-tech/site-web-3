@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ping Pong Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #000;
+    }
+
+    #game {
+      position: relative;
+      width: 800px;
+      height: 400px;
+      background-color: #333;
+      border: 2px solid #fff;
+    }
+
+    .paddle {
+      position: absolute;
+      width: 20px;
+      height: 100px;
+      background-color: #fff;
+    }
+
+    #paddle1 {
+      left: 0;
+      top: 150px;
+    }
+
+    #paddle2 {
+      right: 0;
+      top: 150px;
+    }
+
+    #ball {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #fff;
+      border-radius: 50%;
+      left: 390px;
+      top: 190px;
+    }
+  </style>
+</head>
+<body>
+  <div id="game">
+    <div id="paddle1" class="paddle"></div>
+    <div id="paddle2" class="paddle"></div>
+    <div id="ball"></div>
+  </div>
+
+  <script>
+    const game = document.getElementById("game");
+    const paddle1 = document.getElementById("paddle1");
+    const paddle2 = document.getElementById("paddle2");
+    const ball = document.getElementById("ball");
+
+    let paddle1Y = 150;
+    let paddle2Y = 150;
+    let ballX = 390;
+    let ballY = 190;
+    let ballSpeedX = 4;
+    let ballSpeedY = 4;
+
+    // التحكم بالمضارب
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "w" && paddle1Y > 0) paddle1Y -= 10;
+      if (e.key === "s" && paddle1Y < 300) paddle1Y += 10;
+      if (e.key === "ArrowUp" && paddle2Y > 0) paddle2Y -= 10;
+      if (e.key === "ArrowDown" && paddle2Y < 300) paddle2Y += 10;
+
+      paddle1.style.top = paddle1Y + "px";
+      paddle2.style.top = paddle2Y + "px";
+    });
+
+    // تحريك الكرة
+    function moveBall() {
+      ballX += ballSpeedX;
+      ballY += ballSpeedY;
+
+      // تصادم الكرة مع الجدران العلوية والسفلية
+      if (ballY <= 0 || ballY >= 380) ballSpeedY *= -1;
+
+      // تصادم الكرة مع المضارب
+      if (
+        (ballX <= 20 && ballY >= paddle1Y && ballY <= paddle1Y + 100) ||
+        (ballX >= 760 && ballY >= paddle2Y && ballY <= paddle2Y + 100)
+      ) {
+        ballSpeedX *= -1;
+      }
+
+      // إعادة تعيين الكرة إذا خرجت من الشاشة
+      if (ballX <= 0 || ballX >= 780) {
+        ballX = 390;
+        ballY = 190;
+        ballSpeedX *= -1;
+      }
+
+      ball.style.left = ballX + "px";
+      ball.style.top = ballY + "px";
+
+      requestAnimationFrame(moveBall);
+    }
+
+    moveBall();
+  </script>
+</body>
+</html>
